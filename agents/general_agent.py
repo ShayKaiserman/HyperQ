@@ -10,10 +10,12 @@ from random_agent import RandomAgent
 from iga import IGAAgent
 from phc import PHCAgent
 from hyper_q import HyperQLearningAgent
+from ultra_q import UltraQLearningAgent, Similarity
 
 class Agent:
     def __init__(self, agent_type: str = '',
-                 n_states: int = None, n_actions: int = None, n_opponent_actions: int = None, estimator: str = None,
+                 n_states: int = None, n_actions: int = None, n_opponent_actions: int = None,
+                 estimator: str = 'bayesian',
                  initial_strategy: np.ndarray = None):
 
         if agent_type == 'Constant':
@@ -29,6 +31,9 @@ class Agent:
                                              n_opponent_actions=n_opponent_actions, estimator=estimator,
                                              prior_strategy=initial_strategy)
         elif agent_type == 'UltraQ':
+            self.agent = UltraQLearningAgent(n_states=n_states, n_actions=n_actions,
+                                             n_opponent_actions=n_opponent_actions,
+                                             prior_strategy=initial_strategy, similarity=Similarity.cosine)
             pass
         else:
             raise KeyError(f"Agent of type {agent_type} doesn't defined")
@@ -48,3 +53,7 @@ class Agent:
 
     def get_strategy(self):
         return self.agent.strategy
+
+    def random_strategy_restarts(self):
+        if self.agent_name not in ['Constant', 'Random']:
+            self.agent.strategy = np.random.dirichlet(np.ones(self.agent.n_actions), size=self.agent.n_states)

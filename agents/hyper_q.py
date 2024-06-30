@@ -13,11 +13,12 @@ class HyperQLearningAgent:
         - n_opponent_actions: Number of actions available to the opponent.
         - alpha: Learning rate.
         - gamma: Discount factor.
-        - epsilon: Exploration rate for epsilon-greedy policy.
+        - epsilon: Exploration rate for epsilon-greedy policy. Controls the trade-off between exploration and exploitation.
         - estimator: Method to estimate opponent strategies ('omniscient', 'EMA', 'bayesian').
         - decay: Decay rate for EMA.
         - prior_strategy: Initial strategy to start from.
         """
+
         self.n_states = n_states
         self.n_actions = n_actions
         self.n_opponent_actions = n_opponent_actions
@@ -26,7 +27,8 @@ class HyperQLearningAgent:
         self.epsilon = epsilon
 
         # Initialize Q-table with zeros
-        self.Q = np.zeros((n_states, n_opponent_actions, n_actions))
+        # self.Q = np.zeros((n_states, n_opponent_actions, n_actions))
+        self.Q = np.random.random_sample((n_states, n_opponent_actions, n_actions))
         self.bellman_errors = []
 
         # Initialize the agent's strategy
@@ -36,8 +38,10 @@ class HyperQLearningAgent:
                 for a in range(n_actions):
                     self.Q[state, :, a] = np.log(self.strategy[state, a]+0.1)  # Use log to set initial Q-values
         else:
-            # Uniformly distributed strategy
-            self.strategy = np.ones((n_states, n_actions)) / n_actions
+            # Random probabilities
+            self.strategy = np.random.dirichlet(np.ones(n_actions), size=n_states)
+            # # Uniformly distributed strategy
+            # self.strategy = np.ones((n_states, n_actions)) / n_actions
 
         # Initialize the estimator based on the specified type
         if estimator == 'omniscient':
@@ -57,13 +61,10 @@ class HyperQLearningAgent:
         if np.random.random() < self.epsilon:
             return np.random.randint(self.n_actions)
         else:
-            # # estimate the opponent strategy and act upon that
-            # opponent_strategy = self.estimator.get_estimated_strategy()
-            # return np.argmax(self.Q[state, :, np.argmax(opponent_strategy)])
-            # Do the most probable action in the given state, based on our learned strategy
-            return np.argmax(self.strategy[state])
-
-
+            # Choose an action based on our strategy
+            return np.random.choice(self.n_actions, p=self.strategy[state])
+            # # Do the most probable action in the given state, based on our learned strategy
+            # return np.argmax(self.strategy[state])
 
     def update_Q(self, state, action, reward, next_state, opponent_action, opponent_strategy):
         """

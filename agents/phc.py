@@ -22,14 +22,17 @@ class PHCAgent:
         self.epsilon = epsilon
 
         # Initialize Q-table and agent's strategy
-        self.Q = np.zeros((n_states, n_actions))
+        # self.Q = np.zeros((n_states, n_actions))
+        self.Q = np.random.random_sample((n_states, n_actions))
 
         # Initialize the agent's strategy
         if prior_strategy is not None:
             self.strategy = prior_strategy
         else:
+            # Random probabilities
+            self.strategy = np.random.dirichlet(np.ones(n_actions), size=n_states)
             # uniform distributed
-            self.strategy = np.ones((n_states, n_actions)) / n_actions
+            # self.strategy = np.ones((n_states, n_actions)) / n_actions
 
     def get(self, attr, default=None):
         return getattr(self, attr, default)
@@ -63,11 +66,9 @@ class PHCAgent:
 
         # Update policy
         best_action = np.argmax(self.Q[state])
-        for a in range(self.n_actions):
-            if a == best_action:
-                self.strategy[state, a] = min(1, self.strategy[state, a] + self.delta)
-            else:
-                self.strategy[state, a] = max(0, self.strategy[state, a] - self.delta / (self.n_actions - 1))
+        update = np.where(np.arange(self.n_actions) == best_action, self.delta, -self.delta / (self.n_actions - 1))
+        self.strategy[state] += update
 
-        # Normalize the strategy
-        self.strategy[state] /= self.strategy[state].sum()
+        # Clip probabilities to [0, 1] and normalize
+        self.strategy = np.clip(self.strategy, 0, 1)
+        self.strategy /= self.strategy.sum(axis=1, keepdims=True)

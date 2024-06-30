@@ -18,6 +18,9 @@ class Agent:
                  estimator: str = 'bayesian',
                  initial_strategy: np.ndarray = None):
 
+        self.n_states = n_states
+        self.n_actions = n_actions
+
         if agent_type == 'Constant':
             self.agent = ConstantAgent(n_states=n_states, n_actions=n_actions)
         elif agent_type == 'Random':
@@ -57,3 +60,7 @@ class Agent:
     def random_strategy_restarts(self):
         if self.agent_name not in ['Constant', 'Random']:
             self.agent.strategy = np.random.dirichlet(np.ones(self.agent.n_actions), size=self.agent.n_states)
+
+    def uniform_strategy(self):
+        # Uniformly distributed strategy
+        self.agent.strategy = np.ones((self.agent.n_states, self.agent.n_actions)) / self.agent.n_actions

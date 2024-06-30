@@ -51,6 +51,13 @@ class IGAAgent:
             [-1, 1, 0]
         ])
 
+        # # The payoff matrix for hill-climbing (expected rewards)
+        # R = np.array([
+        #     [1, - 40, - 10.],
+        #     [-40, - 3, - 4.],
+        #     [-7.9, - 10, - 5.]
+        # ])
+
         # Compute the gradient of the policy
         gradient = np.zeros(self.n_actions)
         for a in range(self.n_actions):

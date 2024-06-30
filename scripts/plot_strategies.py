@@ -1,9 +1,9 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+from utils import *
 
-
-def clean_and_plot(array: np.ndarray, keys: list, save_path: str, title: str = None):
+def clean_and_plot(array: np.ndarray, keys: list, save_path: str, title: str = None, log_scale: bool = False):
     """
     This function:
     1. Removes rows from the array where all values are zeros.
@@ -32,7 +32,12 @@ def clean_and_plot(array: np.ndarray, keys: list, save_path: str, title: str = N
     # Step 2: Plot each column
     plt.figure()
     for i, key in enumerate(keys):
+        # smoothed_plot = adaptive_savgol_filter(cleaned_array[:, i], max_window_length=2000, poly_order=2)
+        # plt.plot(smoothed_plot, label=key)
         plt.plot(cleaned_array[:, i], label=key)
+
+    if log_scale:
+        plt.xscale('log')
 
     # Add legend
     plt.legend()
@@ -49,22 +54,49 @@ def clean_and_plot(array: np.ndarray, keys: list, save_path: str, title: str = N
 
 def main():
 
-    output_dir = "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/HyperQ_bayesian_Vs_IGA"
+    # output_dir = "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/rock-paper-scissors/HyperQ_bayesian_Vs_HyperQ"
+    # output_dir = "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/hill-climbing/HyperQ_bayesian_Vs_Constant"
 
-    strategies = {
-        "student": f"{output_dir}/student_strategies.npy",
-        "teacher": f"{output_dir}/teacher_strategies.npy",
-        "teacher's estimated": f"{output_dir}/teacher_est_strategies.npy"
-    }
+    # dirs = [
+    #     # "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/HyperQ_bayesian_Vs_Random",
+    #     # "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/HyperQ_ema_Vs_Random",
+    #     # '/home/shayka/Projects/MultiAgent-learning/HyperQ/results/HyperQ_omniscient_Vs_Random',
+    #     '/home/shayka/Projects/MultiAgent-learning/HyperQ/results/rock-paper-scissors/HyperQ_bayesian_Vs_HyperQ',
+    #     # '/home/shayka/Projects/MultiAgent-learning/HyperQ/results/PHC_Vs_Random'
+    # ]
 
-    for strategy_name, file in strategies.items():
-        print(strategy_name)
-        # Load
-        strategy = np.load(file)
-        # Plot
-        actions_names = [f"action {i}" for i in range(strategy.shape[1])]
-        clean_and_plot(array=strategy, keys=actions_names, title=f"{strategy_name} strategy",
-                       save_path=os.path.join(output_dir, f"{strategy_name}_strategies.png"))
+    log_scale = True
+
+    # main_dir = "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/rock-paper-scissors"
+    # main_dir = "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/rock-paper-scissors-smooth"
+    main_dir = "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/hill-climbing"
+    # main_dir = "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/prisoners-dilemma"
+    dirs = [os.path.join(main_dir, sub_dir) for sub_dir in os.listdir(main_dir)
+            if os.path.isdir(os.path.join(main_dir, sub_dir))]
+
+    for output_dir in dirs:
+
+        print(f"{PRINT_START}{BLUE}{output_dir}{PRINT_STOP}")
+
+        strategies = {
+            "my": f"{output_dir}/student_strategies.npy",
+            "opponent": f"{output_dir}/teacher_strategies.npy",
+            "opponent's estimated": f"{output_dir}/teacher_est_strategies.npy"
+        }
+
+        for strategy_name, file in strategies.items():
+            print(strategy_name)
+            # Load
+            strategy = np.load(file)
+            # Plot
+            try:
+                actions_names = [f"action {i}" for i in range(strategy.shape[1])]
+                plot_name = f"{strategy_name}_strategies-log_scale.png" if log_scale else f"{strategy_name}_strategies.png"
+                clean_and_plot(array=strategy, keys=actions_names, title=f"{strategy_name} strategy",
+                               save_path=os.path.join(output_dir, plot_name),
+                               log_scale=log_scale)
+            except:
+                continue
 
 
 

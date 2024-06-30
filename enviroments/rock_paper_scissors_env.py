@@ -3,12 +3,15 @@ import numpy as np
 
 class RockPaperScissorsEnv:
     def __init__(self):
+        self.name = 'rock-paper-scissors'
+        self.type = 'competitive'
         self.initial_state = 0
         self.n_actions = 3
         self.n_states = 1  # Single state game
         self.action_space = ['Rock', 'Paper', 'Scissors']
 
-    def step(self, action1, action2):
+    @staticmethod
+    def step(action1, action2):
         payoff_matrix = np.array([
             [0, -1, 1],
             [1, 0, -1],
@@ -22,5 +25,6 @@ class RockPaperScissorsEnv:
         # return reward1, reward2, 0, {}  # Rewards, next state (always 0), info dict
         return reward1, reward2, 0  # Rewards, next state (always 0)
 
-    def reset(self):
+    @staticmethod
+    def reset():
         return 0 # Always return the single state

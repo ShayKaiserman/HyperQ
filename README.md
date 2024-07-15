@@ -3,7 +3,7 @@ Implementation of Hyper-Q agent in multiagents framework
 
 The original paper:
 
-[Extending Q-Learning to General Adaptive Multi-Agent Systems](assests/L 4%20-%20NIPS-2003-extending-q-learning-to-general-adaptive-multi-agent-systems-Paper.pdf)
+[Extending Q-Learning to General Adaptive Multi-Agent Systems](assests/L4%20-%20NIPS-2003-extending-q-learning-to-general-adaptive-multi-agent-systems-Paper.pdf)
 
 Another paper explains further extension to Ultra-Q agent:
 

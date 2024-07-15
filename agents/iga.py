@@ -65,8 +65,10 @@ class IGAAgent:
             gradient[a] = R[a, :].dot(opponent_strategy[state])
 
         self.strategy[state] += self.eta * gradient
-        self.strategy[state] = np.clip(self.strategy[state], 0, 1)
-        self.strategy[state] /= self.strategy[state].sum()
+
+        # Clip probabilities to [0, 1] and normalize
+        self.strategy = np.clip(self.strategy, 0, 1)
+        self.strategy /= self.strategy.sum(axis=1, keepdims=True)
 
         # # Compute the gradient of the policy
         # gradient = np.zeros(self.n_actions)

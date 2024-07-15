@@ -62,7 +62,8 @@ class HyperQLearningAgent:
             return np.random.randint(self.n_actions)
         else:
             # Choose an action based on our strategy
-            return np.random.choice(self.n_actions, p=self.strategy[state])
+            action = np.random.choice(self.n_actions, p=self.strategy[state])
+            return action
             # # Do the most probable action in the given state, based on our learned strategy
             # return np.argmax(self.strategy[state])
 

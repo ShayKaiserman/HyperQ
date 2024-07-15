@@ -61,16 +61,17 @@ def main():
     #     # "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/HyperQ_bayesian_Vs_Random",
     #     # "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/HyperQ_ema_Vs_Random",
     #     # '/home/shayka/Projects/MultiAgent-learning/HyperQ/results/HyperQ_omniscient_Vs_Random',
-    #     '/home/shayka/Projects/MultiAgent-learning/HyperQ/results/rock-paper-scissors/HyperQ_bayesian_Vs_HyperQ',
+    #     '/home/shayka/Projects/MultiAgent-learning/HyperQ/results/rock-paper-scissors/HyperQ_bayesian_Vs_Constant-epsilon=0',
+    #     '/home/shayka/Projects/MultiAgent-learning/HyperQ/results/rock-paper-scissors/HyperQ_bayesian_Vs_Constant-epsilon=0@after_2000_episodes',
     #     # '/home/shayka/Projects/MultiAgent-learning/HyperQ/results/PHC_Vs_Random'
     # ]
 
     log_scale = True
 
-    # main_dir = "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/rock-paper-scissors"
-    # main_dir = "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/rock-paper-scissors-smooth"
-    main_dir = "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/hill-climbing"
-    # main_dir = "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/prisoners-dilemma"
+    main_dir = "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/rock-paper-scissors"
+    # # main_dir = "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/rock-paper-scissors-smooth"
+    # # main_dir = "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/hill-climbing"
+    # # main_dir = "/home/shayka/Projects/MultiAgent-learning/HyperQ/results/prisoners-dilemma"
     dirs = [os.path.join(main_dir, sub_dir) for sub_dir in os.listdir(main_dir)
             if os.path.isdir(os.path.join(main_dir, sub_dir))]
 
@@ -90,7 +91,8 @@ def main():
             strategy = np.load(file)
             # Plot
             try:
-                actions_names = [f"action {i}" for i in range(strategy.shape[1])]
+                # actions_names = [f"action {i}" for i in range(strategy.shape[1])]
+                actions_names = ["rock", "paper", "scissors"]
                 plot_name = f"{strategy_name}_strategies-log_scale.png" if log_scale else f"{strategy_name}_strategies.png"
                 clean_and_plot(array=strategy, keys=actions_names, title=f"{strategy_name} strategy",
                                save_path=os.path.join(output_dir, plot_name),

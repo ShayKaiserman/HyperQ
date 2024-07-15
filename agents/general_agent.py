@@ -64,3 +64,8 @@ class Agent:
     def uniform_strategy(self):
         # Uniformly distributed strategy
         self.agent.strategy = np.ones((self.agent.n_states, self.agent.n_actions)) / self.agent.n_actions
+
+    def update_epsilon(self, decay_rate=0.99):
+        if self.agent_name in ['PHC', 'HyperQ_omniscient', 'HyperQ_ema', 'HyperQ_bayesian', 'UltraQ']:
+            # Linear decay
+            self.agent.epsilon = max(self.agent.epsilon * decay_rate, 0)

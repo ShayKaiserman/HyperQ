@@ -90,13 +90,16 @@ def train(student_agent, teacher_agent, env, n_episodes=10000, restart_strategy_
         student_agent.update_strategy(state, student_action, student_reward, next_state,
                                       opponent_action=teacher_action, opponent_strategy=teacher_strategy)
 
+        # Update the epsilon for epsilon-greedy exploration
+        teacher_agent.update_epsilon(decay_rate=0.95)
+        student_agent.update_epsilon(decay_rate=0.95)
+
         # Store all the strategies
         teacher_strategies[episode] = teacher_strategy
         student_strategies[episode] = student_strategy
         opponent_estimator = student_agent.agent.get('estimator', None)
         if opponent_estimator:
             teacher_est_strategies[episode] = opponent_estimator.get_estimated_strategy()
-
 
         # Rewards:
         # 1) if we play competitive game - we are interested in the difference between the rewards the players get.
